@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react";
-import { Dices, RefreshCw, Copy, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Dices, RefreshCw, Copy } from "lucide-react";
 import { toast } from "sonner";
+
+import { UtilsBackLink } from "../utils-back-link";
 
 export default function RandomNumberPage() {
     const [min, setMin] = useState<string>("1");
@@ -118,9 +119,7 @@ export default function RandomNumberPage() {
     return (
         <div className="mobile-page mobile-safe-bottom max-w-4xl mx-auto space-y-6">
             <div className="flex items-center gap-3 mb-6">
-                <Link href="/utils" aria-label="도구 모음으로 돌아가기" className="tap-target p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors mr-2">
-                    <ArrowLeft className="w-5 h-5 text-slate-500" />
-                </Link>
+                <UtilsBackLink />
                 <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600">
                     <Dices className="w-6 h-6" />
                 </div>

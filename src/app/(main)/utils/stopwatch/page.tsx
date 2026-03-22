@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Clock3, Flag, Pause, Play, RotateCcw } from "lucide-react";
+import { Clock3, Flag, Pause, Play, RotateCcw } from "lucide-react";
 
 import { formatClock } from "../time-format";
+import { UtilsBackLink } from "../utils-back-link";
 
 type LapRecord = {
   id: number;
@@ -90,13 +90,7 @@ export default function StopwatchPage() {
   return (
     <div className="mobile-page mobile-safe-bottom mx-auto max-w-5xl space-y-6">
       <div className="mb-6 flex items-center gap-3">
-        <Link
-          href="/utils"
-          aria-label="도구 모음으로 돌아가기"
-          className="tap-target -ml-2 mr-2 rounded-full p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
-        >
-          <ArrowLeft className="h-5 w-5 text-slate-500" />
-        </Link>
+        <UtilsBackLink />
         <div className="rounded-full bg-amber-100 p-3 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
           <Clock3 className="h-6 w-6" />
         </div>

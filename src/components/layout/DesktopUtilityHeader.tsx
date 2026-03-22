@@ -4,13 +4,13 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, ChevronDown, LogIn, Menu, Radio, ShieldCheck, User } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+import { HomeHeaderMeta } from "@/app/(main)/home-personalization";
 import { LogoutButton } from "@/components/auth/logout-button";
+import { RealtimeClock } from "@/components/dashboard-widgets";
+import { ModeToggle } from "@/components/mode-toggle";
 import { useUserSummary } from "@/components/user-summary-provider";
 import { cn } from "@/lib/utils";
 import { NotificationBadge } from "./notification-badge";
-import { RealtimeClock } from "@/components/dashboard-widgets";
-import { HomeHeaderMeta } from "@/app/(main)/home-personalization";
 
 function QuickMenuLink({
   href,
@@ -137,7 +137,7 @@ function UserMenuDropdown({
                 className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
                 style={{ color: "var(--muted)" }}
               >
-                빠른 이동
+                QUICK LINKS
               </div>
               {showMusicLink ? (
                 <QuickMenuLink
@@ -198,11 +198,13 @@ export function DesktopUtilityHeader({
   isHome,
   homeWeather,
   isSidebarOpen,
+  isSidebarPinned,
   onSidebarToggle,
 }: {
   isHome: boolean;
   homeWeather?: ReactNode;
   isSidebarOpen: boolean;
+  isSidebarPinned: boolean;
   onSidebarToggle: () => void;
 }) {
   const pathname = usePathname();
@@ -222,23 +224,30 @@ export function DesktopUtilityHeader({
         }}
       >
         <div className="flex min-h-[3.5rem] items-center justify-between gap-4">
-          <div className="flex min-w-0 flex-1 items-center gap-3">
-            <button
-              type="button"
-              data-testid="desktop-sidebar-toggle"
-              aria-label={isSidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
-              aria-controls="desktop-sidebar-drawer"
-              aria-expanded={isSidebarOpen}
-              onClick={onSidebarToggle}
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors"
-              style={{
-                backgroundColor: "color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%)",
-                borderColor: "color-mix(in srgb, var(--border) 75%, var(--accent) 25%)",
-                color: "var(--foreground)",
-              }}
+          <div className="flex min-w-0 flex-1 items-center">
+            <div
+              className={cn(
+                "origin-left overflow-hidden transition-[width,opacity,margin,transform] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+                isSidebarPinned ? "mr-0 w-0 scale-75 opacity-0" : "mr-3 w-11 scale-100 opacity-100",
+              )}
             >
-              <Menu className="h-5 w-5" />
-            </button>
+              <button
+                type="button"
+                data-testid="desktop-sidebar-toggle"
+                aria-label={isSidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
+                aria-controls="desktop-sidebar-drawer"
+                aria-expanded={isSidebarOpen}
+                onClick={onSidebarToggle}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors"
+                style={{
+                  backgroundColor: "color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%)",
+                  borderColor: "color-mix(in srgb, var(--border) 75%, var(--accent) 25%)",
+                  color: "var(--foreground)",
+                }}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
 
             <Link
               href="/"
@@ -252,7 +261,7 @@ export function DesktopUtilityHeader({
             {isHome ? (
               <div
                 data-testid="desktop-home-meta"
-                className="ml-1 flex min-w-0 items-center gap-3 overflow-hidden rounded-full px-3 py-2 text-[12px]"
+                className="ml-4 flex min-w-0 items-center gap-3 overflow-hidden rounded-full px-3 py-2 text-[12px]"
                 style={{
                   backgroundColor: "color-mix(in srgb, var(--surface-2) 50%, transparent)",
                   color: "var(--muted)",

@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react";
-import { Calculator, Trash2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Calculator, Trash2 } from "lucide-react";
+
+import { UtilsBackLink } from "../utils-back-link";
 
 export default function ByteCalculatorPage() {
     const [text, setText] = useState("");
@@ -47,9 +48,7 @@ export default function ByteCalculatorPage() {
     return (
         <div className="mobile-page mobile-safe-bottom space-y-6">
             <div className="flex items-center gap-3 mb-6">
-                <Link href="/utils" aria-label="도구 모음으로 돌아가기" className="tap-target p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors mr-2">
-                    <ArrowLeft className="w-5 h-5 text-slate-500" />
-                </Link>
+                <UtilsBackLink />
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600">
                     <Calculator className="w-6 h-6" />
                 </div>

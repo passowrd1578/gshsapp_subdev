@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Pause, Play, RotateCcw, Timer } from "lucide-react";
+import { Pause, Play, RotateCcw, Timer } from "lucide-react";
 import { toast } from "sonner";
 
 import { formatClock } from "../time-format";
+import { UtilsBackLink } from "../utils-back-link";
 
 const PRESETS = [
   { label: "1분", minutes: 1, seconds: 0 },
@@ -125,13 +125,7 @@ export default function TimerPage() {
   return (
     <div className="mobile-page mobile-safe-bottom mx-auto max-w-5xl space-y-6">
       <div className="mb-6 flex items-center gap-3">
-        <Link
-          href="/utils"
-          aria-label="도구 모음으로 돌아가기"
-          className="tap-target -ml-2 mr-2 rounded-full p-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
-        >
-          <ArrowLeft className="h-5 w-5 text-slate-500" />
-        </Link>
+        <UtilsBackLink />
         <div className="rounded-full bg-emerald-100 p-3 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
           <Timer className="h-6 w-6" />
         </div>

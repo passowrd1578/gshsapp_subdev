@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, User, Shuffle, RefreshCw, Armchair, Settings, X, Ban, Download } from "lucide-react";
-import Link from "next/link";
+import { User, Shuffle, RefreshCw, Armchair, Settings, X, Ban, Download } from "lucide-react";
 import { toast } from "sonner";
 import { toPng } from 'html-to-image';
+
+import { UtilsBackLink } from "../utils-back-link";
 
 export default function SeatArrangementPage() {
     // Seat Settings
@@ -13,7 +14,9 @@ export default function SeatArrangementPage() {
     const [voidSeats, setVoidSeats] = useState<Set<string>>(new Set()); // "row-col" format
     const [isVoidMode, setIsVoidMode] = useState<boolean>(false);
 
-    // Student Settings
+    // Class Settings
+    const [gradeText, setGradeText] = useState<string>("");
+    const [classText, setClassText] = useState<string>("");
     const [startNum, setStartNum] = useState<string>("1"); // Start number
     const [excludedNums, setExcludedNums] = useState<Set<number>>(new Set());
     const [isExcludeMode, setIsExcludeMode] = useState<boolean>(false);
@@ -30,6 +33,15 @@ export default function SeatArrangementPage() {
     // Derived Values
     const totalSeats = rows * cols;
     const validSeatsCount = totalSeats - voidSeats.size;
+    const normalizedGrade = gradeText.trim();
+    const normalizedClass = classText.trim();
+    const shouldShowStudentId = normalizedGrade !== "" && normalizedClass !== "";
+
+    const formatSeatLabel = (studentNum: number) => (
+        shouldShowStudentId
+            ? `${normalizedGrade}${normalizedClass}${String(studentNum).padStart(2, "0")}`
+            : String(studentNum)
+    );
 
     const [endNum, setEndNum] = useState<string>("");
     const [isEndNumManual, setIsEndNumManual] = useState<boolean>(false);
@@ -199,9 +211,7 @@ export default function SeatArrangementPage() {
     return (
         <div className="mobile-page mobile-safe-bottom max-w-6xl mx-auto space-y-6">
             <div className="flex items-center gap-3 mb-6">
-                <Link href="/utils" aria-label="도구 모음으로 돌아가기" className="tap-target p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors mr-2">
-                    <ArrowLeft className="w-5 h-5 text-slate-500" />
-                </Link>
+                <UtilsBackLink />
                 <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-full text-indigo-600">
                     <Armchair className="w-6 h-6" />
                 </div>
@@ -211,9 +221,9 @@ export default function SeatArrangementPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[270px_810px] lg:justify-center lg:items-stretch">
                 {/* Settings Panel */}
-                <div className="lg:col-span-1 space-y-6">
+                <div className="space-y-6 lg:h-[598px] lg:w-[270px] lg:overflow-y-auto lg:pr-2">
                     {/* 1. Grid Settings */}
                     <div className="glass p-5 rounded-3xl space-y-4">
                         <h2 className="font-bold flex items-center gap-2 text-slate-700 dark:text-slate-200">
@@ -256,11 +266,31 @@ export default function SeatArrangementPage() {
                         </div>
                     </div>
 
-                    {/* 2. Student Settings */}
+                    {/* 2. Class Settings */}
                     <div className="glass p-5 rounded-3xl space-y-4">
                         <h2 className="font-bold flex items-center gap-2 text-slate-700 dark:text-slate-200">
-                            <User className="w-4 h-4" /> 학생 설정
+                            <User className="w-4 h-4" /> 학급 설정
                         </h2>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                                <label className="text-xs text-slate-500 dark:text-slate-400">학년</label>
+                                <input
+                                    type="number" value={gradeText}
+                                    onChange={(e) => setGradeText(e.target.value)}
+                                    className="w-full px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="예: 1"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs text-slate-500 dark:text-slate-400">반</label>
+                                <input
+                                    type="number" value={classText}
+                                    onChange={(e) => setClassText(e.target.value)}
+                                    className="w-full px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="예: 3"
+                                />
+                            </div>
+                        </div>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1">
                                 <label className="text-xs text-slate-500 dark:text-slate-400">시작 번호</label>
@@ -326,9 +356,9 @@ export default function SeatArrangementPage() {
                 </div>
 
                 {/* Main Grid Display */}
-                <div className="lg:col-span-3">
+                <div className="lg:h-[598px] lg:w-[810px]">
                     {isExcludeMode ? (
-                        <div className="glass p-6 rounded-3xl h-full">
+                        <div className="glass h-full overflow-y-auto p-6 rounded-3xl">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="font-bold text-lg">제외할 번호 선택</h3>
                                 <button
@@ -353,7 +383,7 @@ export default function SeatArrangementPage() {
                     ) : (
                         <div
                             ref={gridRef}
-                            className="flex flex-col items-center gap-8 min-h-[500px] justify-center p-8 bg-white dark:bg-slate-900 rounded-3xl"
+                            className="flex min-h-[500px] h-full flex-col items-center justify-center gap-8 overflow-auto rounded-3xl bg-white p-8 dark:bg-slate-900"
                         >
                             {/* Teacher Desk */}
                             <div className="w-64 h-16 bg-amber-200 dark:bg-amber-900/40 border-2 border-amber-300 dark:border-amber-700/50 rounded-lg flex items-center justify-center shadow-sm mb-4">
@@ -392,6 +422,7 @@ export default function SeatArrangementPage() {
                                             const key = `${r}-${c}`;
                                             const isVoid = voidSeats.has(key);
                                             const studentNum = assignments.get(key);
+                                            const seatLabel = studentNum ? formatSeatLabel(studentNum) : null;
 
                                             return (
                                                 <button
@@ -406,9 +437,9 @@ export default function SeatArrangementPage() {
                                         `}
                                                 >
                                                     {!isVoid && (
-                                                        studentNum && (
-                                                            <span className="text-base md:text-xl font-bold text-indigo-600 dark:text-indigo-400 animate-in zoom-in spin-in-3 duration-300">
-                                                                {studentNum}
+                                                        seatLabel && (
+                                                            <span className={`font-bold text-indigo-600 dark:text-indigo-400 animate-in zoom-in spin-in-3 duration-300 ${seatLabel.length >= 4 ? "text-sm md:text-lg" : "text-base md:text-xl"}`}>
+                                                                {seatLabel}
                                                             </span>
                                                         )
                                                     )}
